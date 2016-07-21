@@ -47,6 +47,8 @@ class CfgFunctions {
             F_FILEPATH(vehicleRole);
             F_FILEPATH(turretPath);
             F_FILEPATH(turretPathWeapon);
+            F_FILEPATH(viewDir);
+            F_FILEPATH(turretDir);
         };
 
         class Anims {
@@ -94,6 +96,7 @@ class CfgFunctions {
         };
 
         class Positions {
+            F_FILEPATH(getArea);
             F_FILEPATH(getDistance);
             F_FILEPATH(getPos);
             F_FILEPATH(setPos);
@@ -101,7 +104,6 @@ class CfgFunctions {
             F_FILEPATH(setHeight);
             F_FILEPATH(randPos);
             F_FILEPATH(randPosArea);
-            F_FILEPATH(inArea);
             F_FILEPATH(getNearest);
             F_FILEPATH(getNearestBuilding);
         };
@@ -109,6 +111,8 @@ class CfgFunctions {
         class Misc {
             F_FILEPATH(addPerFrameHandler);
             F_FILEPATH(removePerFrameHandler);
+            F_FILEPATH(createPerFrameHandlerObject);
+            F_FILEPATH(deletePerFrameHandlerObject);
             F_FILEPATH(addPlayerAction);
             F_FILEPATH(removePlayerAction);
             F_FILEPATH(createNamespace);
