@@ -3,10 +3,12 @@ private ["_unit","_weapon","_param","_mode"];
 _unit = _this select 0;
 _weapon = _this select 1;
 _mode = _this select 3;
+_param = (configFile >> "CfgWeapons" >> _weapon >> "bg_weaponparameters");
 
+_unit setVariable [QGVAR(param_cache), _param];
 
-if (isNil {_unit getVariable QGVAR(onFired_Action)}) then {
-	_param = (configFile >> "CfgWeapons" >> _weapon >> "bg_weaponparameters");
+if (isClass _param) then
+{
 	if (isClass (_param >> "onFired_Action")) then
 	{
 		private ["_HandAction","_Actiondelay","_Sound","_Sound_Location","_hasOptic","_reloadDelay","_weaponConfig","_speed"];
@@ -27,12 +29,10 @@ if (isNil {_unit getVariable QGVAR(onFired_Action)}) then {
 			_speed = getnumber (_weaponConfig >> "reloadTime");
 			_reloadDelay = _speed + 0.15;
 		};
+		
+		
+		[_unit,_weapon,_HandAction,_Actiondelay,_Sound,_Sound_Location,_hasOptic,_reloadDelay] spawn FUNC(onFiredAction);
 	};
-	
-	
-};
-
-if (isNil {_unit getVariable QGVAR(onEmpty)}) then {
 	if (isClass (_param >> "onEmpty")) then
 	{
 		if (_unit ammo _weapon == 0) then 
@@ -44,4 +44,3 @@ if (isNil {_unit getVariable QGVAR(onEmpty)}) then {
 		};
 	};
 };
-[_unit,_weapon,_HandAction,_Actiondelay,_Sound,_Sound_Location,_hasOptic,_reloadDelay] spawn FUNC(onFiredAction);
