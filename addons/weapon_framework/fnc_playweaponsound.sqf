@@ -1,8 +1,6 @@
 #include "script_component.hpp"
-private ["_unit","_arg","_sound","_Sound_Location"];
-_unit = _this select 0;
-_sound = _this select 1;
-_Sound_Location = _this select 2;
+params ["_unit","_sound","_Sound_Location"];
+
 
 if (isnil "_sound" || _sound == "") exitwith {}; // No sound set, don't play anything.
 if (isNil "_unit") exitwith {false}; //Rarely happens that _unit stops existing

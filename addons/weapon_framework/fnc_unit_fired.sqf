@@ -1,47 +1,38 @@
+/* Order of operations:
+1. Is weapon the same as last time?
+2. If yes, are we skipping or using the cache?
+3. If No, or it's the first time we've fired, cache the weapon. 
+*/
+
 #include "script_component.hpp"
-private ["_unit","_weapon","_param","_mode"];
-_unit = _this select 0;
-_weapon = _this select 1;
-_mode = _this select 3;
 
+params ["_unit","_weapon","_muzzle","_mode"];
+private _weapon_check = _unit getVariable [QGVAR(weaponCheck),"false"];
+private _onFired_cache = _unit getVariable [QGVAR(onFired_Action_cache),nil];
+private _onEmpty_cache = _unit getVariable [QGVAR(onEmpty_cache),nil];
 
-if (isNil {_unit getVariable QGVAR(onFired_Action)}) then {
-	_param = (configFile >> "CfgWeapons" >> _weapon >> "bg_weaponparameters");
-	if (isClass (_param >> "onFired_Action")) then
+if (_weapon != (_unit getVariable [QGVAR(weapon),_weapon])) then {
+	_weapon_check = "false";
+};
+if (_weapon_check == "true") then
+{
+	if (_unit ammo _weapon !=0) then 
 	{
-		private ["_HandAction","_Actiondelay","_Sound","_Sound_Location","_hasOptic","_reloadDelay","_weaponConfig","_speed"];
-		_HandAction = (_param >> "onFired_Action" >> "HandAction") call BIS_fnc_getCfgData;
-		_Actiondelay = (_param >> "onFired_Action" >> "Actiondelay") call BIS_fnc_getCfgData;
-		_Sound = (_param >> "onFired_Action" >> "Sound") call BIS_fnc_getCfgData;
-		_Sound_Location = (_param >> "onFired_Action" >> "Sound_Location") call BIS_fnc_getCfgData;
-		_hasOptic = (_param >> "onFired_Action" >> "hasOptic") call BIS_fnc_getCfgData;
-		if (_mode == _weapon) then 
-		{
-			_weaponConfig = (configFile >> "CfgWeapons" >> _weapon);
-			_speed = getnumber (_weaponConfig >> "reloadTime");
-			_reloadDelay = _speed + 0.15;
-		}
-		else
-		{
-			_weaponConfig = (configFile >> "CfgWeapons" >> _weapon >> _mode);
-			_speed = getnumber (_weaponConfig >> "reloadTime");
-			_reloadDelay = _speed + 0.15;
+		if !(isNil "_onFired_cache") then {
+			_onFired_cache spawn FUNC(onFiredAction);
+		};
+	}
+	else
+	{
+		if !(isNil "_onEmpty_cache") then {
+			_onEmpty_cache spawn FUNC(playweaponsound);
 		};
 	};
-	
-	
+}
+else
+{
+	if (_weapon_check == "skip") exitwith {};
+	[_unit,_weapon,_muzzle,_mode] call FUNC(unit_cache); 
+	_this spawn FUNC(unit_fired);
 };
 
-if (isNil {_unit getVariable QGVAR(onEmpty)}) then {
-	if (isClass (_param >> "onEmpty")) then
-	{
-		if (_unit ammo _weapon == 0) then 
-		{
-			_Sound = (_param >> "onEmpty" >> "Sound") call BIS_fnc_getCfgData;
-			_Sound_Location = (_param >> "onEmpty" >> "Sound_Location") call BIS_fnc_getCfgData;
-			
-			[_unit,_Sound,_Sound_Location] spawn FUNC(playweaponsound);
-		};
-	};
-};
-[_unit,_weapon,_HandAction,_Actiondelay,_Sound,_Sound_Location,_hasOptic,_reloadDelay] spawn FUNC(onFiredAction);

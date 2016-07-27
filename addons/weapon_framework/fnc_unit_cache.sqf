@@ -1,14 +1,13 @@
 #include "script_component.hpp"
-private ["_unit","_weapon","_param","_mode"];
-_unit = _this select 0;
-_weapon = _this select 1;
-_mode = _this select 3;
-_param = (configFile >> "CfgWeapons" >> _weapon >> "bg_weaponparameters");
+params ["_unit","_weapon","_muzzle","_mode"];
 
-_unit setVariable [QGVAR(param_cache), _param];
+private _param = (configFile >> "CfgWeapons" >> _weapon >> "bg_weaponparameters");
+
+_unit setvariable [QGVAR(weapon),_weapon];
 
 if (isClass _param) then
 {
+	_unit setVariable [QGVAR(weaponCheck), "true"];
 	if (isClass (_param >> "onFired_Action")) then
 	{
 		private ["_HandAction","_Actiondelay","_Sound","_Sound_Location","_hasOptic","_reloadDelay","_weaponConfig","_speed"];
@@ -30,17 +29,25 @@ if (isClass _param) then
 			_reloadDelay = _speed + 0.15;
 		};
 		
-		
-		[_unit,_weapon,_HandAction,_Actiondelay,_Sound,_Sound_Location,_hasOptic,_reloadDelay] spawn FUNC(onFiredAction);
+		_unit setVariable [QGVAR(onFired_Action_cache), [_unit,_weapon,_HandAction,_Actiondelay,_Sound,_Sound_Location,_hasOptic,_reloadDelay]];
+	}
+	else
+	{
+		_unit setVariable [QGVAR(onFired_Action_cache), nil];
 	};
 	if (isClass (_param >> "onEmpty")) then
 	{
-		if (_unit ammo _weapon == 0) then 
-		{
-			_Sound = (_param >> "onEmpty" >> "Sound") call BIS_fnc_getCfgData;
-			_Sound_Location = (_param >> "onEmpty" >> "Sound_Location") call BIS_fnc_getCfgData;
-			
-			[_unit,_Sound,_Sound_Location] spawn FUNC(playweaponsound);
-		};
+		_Sound = (_param >> "onEmpty" >> "Sound") call BIS_fnc_getCfgData;
+		_Sound_Location = (_param >> "onEmpty" >> "Sound_Location") call BIS_fnc_getCfgData;
+		_unit setVariable [QGVAR(onEmpty_cache), [_unit,_Sound,_Sound_Location]];
+	}
+	else
+	{
+		_unit setVariable [QGVAR(onEmpty_cache), nil];
 	};
+}
+else
+{
+	_unit setVariable [QGVAR(weaponCheck), "skip"];
+	false
 };

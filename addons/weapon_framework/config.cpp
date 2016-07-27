@@ -13,21 +13,25 @@ class CfgPatches {
     };
 };
 #include "CfgEventHandlers.hpp"
-class bg_weaponparameters 
+
+class cfgWeapons
 {
-
-	class onFired_Action
+	class bg_weaponparameters 
 	{
-		HandAction = "";
-		Actiondelay = 0.2;
-		Sound = "";
-		Sound_Location = "RightHandMiddle1";
-		hasOptic = false;
-	};
-	class onEmpty
-	{
-		Sound = "";
-		Sound_Location = "RightHandMiddle1";
-	};
 
+		class onFired_Action
+		{
+			HandAction = "";
+			Actiondelay = 0.2;
+			Sound = "";
+			Sound_Location = "RightHandMiddle1";
+			hasOptic = false;
+		};
+		class onEmpty
+		{
+			Sound = "";
+			Sound_Location = "RightHandMiddle1";
+		};
+
+	};
 };
