@@ -16,22 +16,22 @@ class CfgPatches {
 
 class cfgWeapons
 {
-	class bg_weaponparameters 
-	{
+    class bg_weaponparameters 
+    {
 
-		class onFired_Action
-		{
-			HandAction = "";
-			Actiondelay = 0.2;
-			Sound = "";
-			Sound_Location = "RightHandMiddle1";
-			hasOptic = false;
-		};
-		class onEmpty
-		{
-			Sound = "";
-			Sound_Location = "RightHandMiddle1";
-		};
+        class onFired_Action
+        {
+            HandAction = "";
+            Actiondelay = 0.2;
+            Sound = "";
+            Sound_Location = "RightHandMiddle1";
+            hasOptic = false;
+        };
+        class onEmpty
+        {
+            Sound = "";
+            Sound_Location = "RightHandMiddle1";
+        };
 
-	};
+    };
 };
